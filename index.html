@@ -1,0 +1,1107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IFS / Chakra / Polyvagal Integration Model</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            /* "Druidic Slate" Palette - Soft, Organic Dark Mode */
+            --bg-color: #161816;        /* Deep Forest Charcoal */
+            --surface-color: #232823;   /* Lighter Slate for Modules */
+            --text-color: #e0e8e0;      /* Off-White/Mist */
+            --text-dim: #8fa08f;        /* Lichen Grey */
+            --border-color: #384238;    /* Stone Border */
+            --highlight-color: #a8dba8; /* Sprout Green */
+            
+            --integration-bg: rgba(64, 128, 128, 0.15);
+            --integration-border: #5c9ea6; /* Muted Teal */
+            
+            /* Naturalized Chakra Tones (Earthy/Pastel) */
+            --root-color: #d67b7b;   /* Clay Red */
+            --sacral-color: #e6a86c; /* Amber */
+            --solar-color: #e6d675;  /* Wheat/Gold */
+            --heart-color: #8cd69b;  /* Fern */
+            --throat-color: #8cbcd6; /* River Slate */
+            --thirdeye-color: #b08cd6; /* Heather */
+            --crown-color: #d9d9d9;  /* Mist */
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            font-family: 'Fira Code', 'Courier New', Courier, monospace; 
+            margin: 0;
+            padding: 40px 20px; 
+            line-height: 1.6;
+            overflow-x: hidden; 
+            position: relative;
+            font-size: 15px; 
+            font-weight: 400;
+            /* Subtle phosphor bloom to integrate text with texture */
+            text-shadow: 0 0 1px rgba(168, 219, 168, 0.2); 
+        }
+
+        /* --- LAYER 1: ORGANIC NOISE (Stone/Paper Texture) --- */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+            pointer-events: none;
+            z-index: 99;
+            opacity: 0.6;
+            mix-blend-mode: overlay;
+        }
+
+        /* --- LAYER 2: SOFT SCANLINES & VIGNETTE (Qud Atmosphere) --- */
+        body::after {
+            content: " ";
+            display: block;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            right: 0;
+            /* Scanlines */
+            background: linear-gradient(
+                rgba(18, 16, 16, 0) 50%, 
+                rgba(0, 0, 0, 0.1) 50%
+            ),
+            /* Vignette */
+            radial-gradient(
+                circle at 50% 50%, 
+                transparent 60%, 
+                rgba(5, 15, 5, 0.6) 100%
+            );
+            background-size: 100% 3px, 100% 100%;
+            z-index: 100;
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 1800px; 
+            margin: 0 auto;
+            padding: 0; 
+            position: relative;
+            z-index: 1; /* Sit above body background but below texture overlays */
+        }
+
+        header {
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 40px;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-weight: 500;
+            color: var(--text-color);
+            font-size: 1.8rem;
+            opacity: 0.95;
+            text-shadow: 0 0 15px rgba(168, 219, 168, 0.15); /* Soft header glow */
+        }
+
+        .subtitle {
+            color: var(--text-dim);
+            font-size: 0.95rem;
+            margin-top: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 400;
+        }
+
+        /* --- GRID SYSTEM --- */
+        .chakra-module {
+            display: grid;
+            grid-template-columns: 180px 1.2fr 1fr 260px; 
+            gap: 1px; 
+            background-color: var(--border-color); 
+            border: 1px solid var(--border-color);
+            border-radius: 6px; 
+            overflow: hidden; 
+            margin-bottom: 30px; 
+            box-shadow: 0 10px 30px rgba(0, 5, 0, 0.3); /* Deep atmospheric shadow */
+        }
+
+        /* Module Headers & Cells */
+        .cell {
+            padding: 24px; 
+            background-color: var(--surface-color); 
+            font-size: 0.9rem; 
+            position: relative;
+        }
+        
+        .module-header {
+            grid-column: 1 / -1;
+            padding: 16px 24px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #2a302a; 
+            font-size: 1.1rem;
+            color: var(--text-color);
+            border-bottom: 1px solid rgba(0,0,0,0.3);
+        }
+        
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .header-telemetry {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .header-keywords {
+            display: block;
+            letter-spacing: 2px;
+            font-size: 0.85em;
+            color: var(--text-dim);
+        }
+
+        .header-specs {
+            display: block;
+            font-size: 0.65em;
+            color: var(--text-dim);
+            letter-spacing: 1px;
+            font-weight: 400;
+            opacity: 0.6;
+        }
+
+        /* SVG Sigil Styling */
+        .sigil-icon {
+            width: 28px;
+            height: 28px;
+            stroke-width: 1.5;
+            fill: none;
+            opacity: 0.8;
+            filter: drop-shadow(0 0 2px rgba(255,255,255,0.1));
+        }
+
+        /* Column Specifics */
+        .col-energy {
+            font-weight: 500;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 20px;
+            background-color: #1e221e; 
+            color: var(--text-color);
+        }
+
+        .col-physio {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .col-psych {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 16px;
+        }
+
+        .col-emergent {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            background-color: rgba(30, 45, 45, 0.25); 
+            border-left: 1px solid var(--border-color);
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--text-color);
+            position: relative;
+        }
+        
+        .col-emergent::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: var(--integration-border);
+            opacity: 0.4;
+            box-shadow: 0 0 8px var(--integration-border); /* Subtle glow on the integration line */
+        }
+
+        /* Inner Content Styling */
+        .label {
+            display: block;
+            color: var(--text-dim);
+            font-size: 0.7em;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            width: 100%;
+            letter-spacing: 1px;
+            font-weight: 600;
+            padding-bottom: 2px;
+        }
+        
+        .label-emergent {
+            color: var(--integration-border);
+            border-bottom-color: rgba(92, 158, 166, 0.3);
+        }
+
+        .sub-section {
+            margin-bottom: 5px;
+        }
+
+        .tone-row {
+            margin-bottom: 14px;
+            padding-left: 0;
+            display: flex;
+            align-items: center; 
+        }
+
+        .tone-marker {
+            display: inline-block;
+            font-size: 0.7em;
+            font-weight: 500;
+            text-transform: uppercase;
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--text-dim);
+            padding: 4px 8px;
+            border: 1px solid var(--border-color);
+            margin-right: 14px;
+            min-width: 95px; 
+            text-align: center;
+            letter-spacing: 0.5px;
+            flex-shrink: 0;
+            border-radius: 4px;
+        }
+
+        /* Neuro-Substrate HUD Styling */
+        .neuro-grid {
+            display: grid;
+            grid-template-columns: 50px 1fr;
+            gap: 8px 16px;
+            font-size: 0.85em;
+            background-color: rgba(0,0,0,0.2); /* Darker backing for data readability */
+            padding: 12px;
+            border-radius: 4px;
+            border: 1px solid var(--border-color);
+        }
+        
+        .n-label {
+            color: var(--text-dim);
+            text-align: right;
+            font-size: 0.75em;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+            align-self: center;
+        }
+
+        .n-val {
+            color: var(--text-color);
+        }
+
+        .chem-tag {
+            display: inline-block;
+            background-color: rgba(168, 219, 168, 0.1);
+            border: 1px solid transparent;
+            padding: 1px 6px;
+            border-radius: 3px;
+            color: var(--highlight-color);
+            font-size: 0.9em;
+            margin-right: 4px;
+        }
+        
+        /* Integration Box Styling */
+        .int-block {
+            margin-bottom: 20px;
+        }
+        .int-header {
+            font-size: 0.7em;
+            color: var(--integration-border);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+            display: block;
+            font-weight: 600;
+        }
+        .int-content {
+            display: block;
+            color: #eefafa;
+        }
+
+        /* Oscilloscope Animations */
+        .waveform {
+            width: 40px;
+            height: 20px;
+            margin-right: 12px;
+            flex-shrink: 0;
+            overflow: visible;
+            opacity: 0.9;
+        }
+
+        .wave-path {
+            fill: none;
+            stroke-width: 1.5;
+            stroke-linecap: round;
+            vector-effect: non-scaling-stroke;
+        }
+
+        /* Ventral: Smooth Sine */
+        .wave-ventral { stroke: var(--heart-color); animation: pulseVentral 4s infinite ease-in-out; }
+        @keyframes pulseVentral { 0% { opacity: 0.5; stroke-width: 1.5; } 50% { opacity: 1; stroke-width: 2; } 100% { opacity: 0.5; stroke-width: 1.5; } }
+
+        /* Sympathetic: High Freq Pulse */
+        .wave-sympathetic { stroke: var(--solar-color); animation: pulseSympathetic 0.8s infinite alternate; }
+        @keyframes pulseSympathetic { 
+            0% { stroke-opacity: 0.6; stroke-width: 1.5; } 
+            100% { stroke-opacity: 1; stroke-width: 2; } 
+        }
+
+        /* Dorsal: Flatline Pulse */
+        .wave-dorsal { stroke: var(--root-color); animation: flatlineDorsal 5s infinite linear; opacity: 0.6; }
+        @keyframes flatlineDorsal { 0%, 90% { stroke-opacity: 0.4; } 92% { stroke-opacity: 1; } 94% { stroke-opacity: 0.4; } 100% { stroke-opacity: 0.4; } }
+
+
+        .exile-box, .proactive-box, .reactive-box {
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            background-color: rgba(0,0,0,0.25);
+            border-radius: 4px;
+        }
+        
+        .exile-box { grid-column: 1 / -1; border-left: 3px solid var(--root-color); color: #e0c0c0; }
+        .proactive-box { border-left: 3px solid var(--text-dim); color: var(--text-color); }
+        .reactive-box { border-left: 3px solid var(--root-color); color: #e0c0c0; }
+
+        /* Color Overrides per Chakra */
+        .root-glow .module-header { border-left: 4px solid var(--root-color); }
+        .root-glow .header-title { color: var(--root-color); }
+        
+        .sacral-glow .module-header { border-left: 4px solid var(--sacral-color); }
+        .sacral-glow .header-title { color: var(--sacral-color); }
+        
+        .solar-glow .module-header { border-left: 4px solid var(--solar-color); }
+        .solar-glow .header-title { color: var(--solar-color); }
+        
+        .heart-glow .module-header { border-left: 4px solid var(--heart-color); }
+        .heart-glow .header-title { color: var(--heart-color); }
+        
+        .throat-glow .module-header { border-left: 4px solid var(--throat-color); }
+        .throat-glow .header-title { color: var(--throat-color); }
+        
+        .thirdeye-glow .module-header { border-left: 4px solid var(--thirdeye-color); }
+        .thirdeye-glow .header-title { color: var(--thirdeye-color); }
+        
+        .crown-glow .module-header { border-left: 4px solid var(--crown-color); }
+        .crown-glow .header-title { color: var(--crown-color); }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .chakra-module {
+                grid-template-columns: 1fr;
+            }
+            .cell {
+                border-right: none;
+                border-bottom: 1px solid var(--border-color);
+            }
+            .module-header {
+                position: sticky;
+                top: 0;
+                z-index: 10;
+                box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            }
+            .col-emergent::before {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>System Architecture: The Human Instrument</h1>
+        <div class="subtitle">Integrative Model: Energetic • Physiological • Phenomenological • Emergent</div>
+    </header>
+
+    <!-- 1. ROOT -->
+    <div class="chakra-module root-glow">
+        <div class="module-header">
+            <div class="header-title">
+                <svg class="sigil-icon" viewBox="0 0 24 24" style="stroke: currentColor;">
+                    <rect x="4" y="4" width="16" height="16" />
+                    <rect x="8" y="8" width="8" height="8" />
+                    <line x1="2" y1="24" x2="22" y2="24" stroke-width="4" />
+                </svg>
+                <span>01 :: ROOT (Muladhara)</span>
+            </div>
+            <div class="header-telemetry">
+                <span class="header-keywords">SURVIVAL • SAFETY • BELONGING</span>
+                <span class="header-specs">SYS::HARDWARE // ELEM::EARTH // 396Hz</span>
+            </div>
+        </div>
+        
+        <!-- Energy Column -->
+        <div class="cell col-energy">
+            <div>
+                <span class="label">Primary Tone</span>
+                Immobilization
+            </div>
+            <div>
+                <span class="label">Core Fear</span>
+                Annihilation / Abandonment
+            </div>
+        </div>
+
+        <!-- Physio Column -->
+        <div class="cell col-physio">
+            <div class="sub-section">
+                <span class="label">Polyvagal State</span>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-ventral" d="M0 10 Q 10 0 20 10 T 40 10" /></svg>
+                    <span class="tone-marker">VENTRAL</span> <span>Embodied safety; grounded presence; felt belonging.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-sympathetic" d="M0 10 L 5 0 L 10 20 L 15 5 L 20 15 L 25 0 L 30 20 L 35 10 L 40 10" /></svg>
+                    <span class="tone-marker">SYMPATHETIC</span> <span>Hypervigilance; restlessness; urge to flee/fight.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-dorsal" d="M0 10 L 10 10 L 12 14 L 14 6 L 16 10 L 40 10" /></svg>
+                    <span class="tone-marker">DORSAL</span> <span>Metabolic shutdown; numbness; dissociation (Freeze).</span>
+                </div>
+            </div>
+            
+            <!-- NEURO HUD -->
+            <div class="sub-section">
+                <span class="label">Neuro-Substrate</span>
+                <div class="neuro-grid">
+                    <div class="n-label">AXIS</div>
+                    <div class="n-val">Brainstem / HPA Axis</div>
+                    
+                    <div class="n-label">CHEM</div>
+                    <div class="n-val"><span class="chem-tag">Cortisol</span> <span class="chem-tag">Norepinephrine</span></div>
+                    
+                    <div class="n-label">MECH</div>
+                    <div class="n-val">Unmyelinated Vagus; Opioid-mediated freeze response</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Psych Column -->
+        <div class="cell col-psych">
+            <div class="exile-box">
+                <span class="label">Exile (Wounded Part)</span>
+                <strong>"The Forsaken Child"</strong><br>
+                Holds terror of abandonment, feeling unsafe & alone.
+            </div>
+            <div class="proactive-box">
+                <span class="label">Proactive (Manager)</span>
+                <strong>"Obsessive Planner"</strong><br>
+                Manages security via hyper-vigilance & rigid financial control.
+            </div>
+            <div class="reactive-box">
+                <span class="label">Reactive (Firefighter)</span>
+                <strong>"The Rager"</strong><br>
+                Reacts to threats with rage, dissociation, or numbing.
+            </div>
+        </div>
+
+        <!-- Emergent Column (Visual Anchor) -->
+        <div class="cell col-emergent">
+            <span class="label label-emergent">Integration Dynamic</span>
+            
+            <div class="int-block">
+                <span class="int-header">MECHANISM</span>
+                <span class="int-content">Amygdala Downregulation</span>
+            </div>
+            
+            <div class="int-block">
+                <span class="int-header">SHIFT (PRAGMATIC)</span>
+                <span class="int-content">From <strong>Primal Terror</strong> to <strong>Embodied Safety</strong>. HPA quieting restores presence.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. SACRAL -->
+    <div class="chakra-module sacral-glow">
+        <div class="module-header">
+            <div class="header-title">
+                <svg class="sigil-icon" viewBox="0 0 24 24" style="stroke: currentColor;">
+                    <path d="M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18z" />
+                    <path d="M12 7c-2.5 0-4 2-4 5s1.5 5 4 5 4-2 4-5-1.5-5-4-5z" />
+                </svg>
+                <span>02 :: SACRAL (Svadhisthana)</span>
+            </div>
+            <div class="header-telemetry">
+                <span class="header-keywords">EMOTIONS • PLEASURE • INTIMACY</span>
+                <span class="header-specs">SYS::HYDRAULIC // ELEM::WATER // 417Hz</span>
+            </div>
+        </div>
+        
+        <div class="cell col-energy">
+            <div>
+                <span class="label">Primary Tone</span>
+                Transition Zone
+            </div>
+            <div>
+                <span class="label">Core Fear</span>
+                Unlovability / Deprivation
+            </div>
+        </div>
+
+        <div class="cell col-physio">
+            <div class="sub-section">
+                <span class="label">Polyvagal State</span>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-ventral" d="M0 10 Q 10 0 20 10 T 40 10" /></svg>
+                    <span class="tone-marker">VENTRAL</span> <span>Fluid emotional expression; embodied pleasure.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-sympathetic" d="M0 10 L 5 0 L 10 20 L 15 5 L 20 15 L 25 0 L 30 20 L 35 10 L 40 10" /></svg>
+                    <span class="tone-marker">SYMPATHETIC</span> <span>Volatile drama; compulsive seeking; anxious hunt.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-dorsal" d="M0 10 L 10 10 L 12 14 L 14 6 L 16 10 L 40 10" /></svg>
+                    <span class="tone-marker">DORSAL</span> <span>Anhedonia; emotional numbness; emptiness.</span>
+                </div>
+            </div>
+            
+            <div class="sub-section">
+                <span class="label">Neuro-Substrate</span>
+                <div class="neuro-grid">
+                    <div class="n-label">AXIS</div>
+                    <div class="n-val">Limbic-Midbrain Loop</div>
+                    
+                    <div class="n-label">CHEM</div>
+                    <div class="n-val"><span class="chem-tag">Dopamine</span> vs <span class="chem-tag">Oxytocin</span></div>
+                    
+                    <div class="n-label">MECH</div>
+                    <div class="n-val">Nucleus Accumbens/Insula; Reward prediction errors</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell col-psych">
+            <div class="exile-box">
+                <span class="label">Exile (Wounded Part)</span>
+                <strong>"The Shamed Child"</strong><br>
+                Holds shame, emotional neglect, feeling unlovable.
+            </div>
+            <div class="proactive-box">
+                <span class="label">Proactive (Manager)</span>
+                <strong>"The Perfectionist"</strong><br>
+                Manages by people-pleasing & emotional suppression.
+            </div>
+            <div class="reactive-box">
+                <span class="label">Reactive (Firefighter)</span>
+                <strong>"The Binger"</strong><br>
+                Reacts with bingeing (food/sex) or drama to escape void.
+            </div>
+        </div>
+
+        <div class="cell col-emergent">
+            <span class="label label-emergent">Integration Dynamic</span>
+            
+            <div class="int-block">
+                <span class="int-header">MECHANISM</span>
+                <span class="int-content">Limbic Resonance</span>
+            </div>
+            
+            <div class="int-block">
+                <span class="int-header">SHIFT (PRAGMATIC)</span>
+                <span class="int-content">From <strong>Compulsion</strong> to <strong>Affective Flow</strong>. Bond replaces addiction loops.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. SOLAR PLEXUS -->
+    <div class="chakra-module solar-glow">
+        <div class="module-header">
+            <div class="header-title">
+                <svg class="sigil-icon" viewBox="0 0 24 24" style="stroke: currentColor;">
+                    <path d="M12 22 L2 2 L22 2 Z" fill="none" />
+                    <line x1="12" y1="12" x2="12" y2="4" />
+                    <line x1="12" y1="12" x2="18" y2="18" />
+                    <line x1="12" y1="12" x2="6" y2="18" />
+                </svg>
+                <span>03 :: SOLAR PLEXUS (Manipura)</span>
+            </div>
+            <div class="header-telemetry">
+                <span class="header-keywords">POWER • AGENCY • SELF-WORTH</span>
+                <span class="header-specs">SYS::COMBUSTION // ELEM::FIRE // 528Hz</span>
+            </div>
+        </div>
+        
+        <div class="cell col-energy">
+            <div>
+                <span class="label">Primary Tone</span>
+                Sympathetic (Mobilization)
+            </div>
+            <div>
+                <span class="label">Core Fear</span>
+                Powerlessness / Worthlessness
+            </div>
+        </div>
+
+        <div class="cell col-physio">
+            <div class="sub-section">
+                <span class="label">Polyvagal State</span>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-ventral" d="M0 10 Q 10 0 20 10 T 40 10" /></svg>
+                    <span class="tone-marker">VENTRAL</span> <span>Confident agency; "power with"; calm assertion.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-sympathetic" d="M0 10 L 5 0 L 10 20 L 15 5 L 20 15 L 25 0 L 30 20 L 35 10 L 40 10" /></svg>
+                    <span class="tone-marker">SYMPATHETIC</span> <span>"Power over" (aggression); anxiety-driven striving.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-dorsal" d="M0 10 L 10 10 L 12 14 L 14 6 L 16 10 L 40 10" /></svg>
+                    <span class="tone-marker">DORSAL</span> <span>Collapsed posture; profound helplessness/defeat.</span>
+                </div>
+            </div>
+            
+            <div class="sub-section">
+                <span class="label">Neuro-Substrate</span>
+                <div class="neuro-grid">
+                    <div class="n-label">AXIS</div>
+                    <div class="n-val">mPFC-Striatal Circuit</div>
+                    
+                    <div class="n-label">CHEM</div>
+                    <div class="n-val"><span class="chem-tag">Serotonin</span> <span class="chem-tag">Adrenaline</span></div>
+                    
+                    <div class="n-label">MECH</div>
+                    <div class="n-val">Adrenal mobilization; Dopamine prediction errors drive agency</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell col-psych">
+            <div class="exile-box">
+                <span class="label">Exile (Wounded Part)</span>
+                <strong>"The Worthless Child"</strong><br>
+                Holds powerlessness, deep inadequacy.
+            </div>
+            <div class="proactive-box">
+                <span class="label">Proactive (Manager)</span>
+                <strong>"The Achiever"</strong><br>
+                Manages self-worth via workaholism & control.
+            </div>
+            <div class="reactive-box">
+                <span class="label">Reactive (Firefighter)</span>
+                <strong>"The Arrogant"</strong><br>
+                Reacts with narcissistic inflation or rebellion.
+            </div>
+        </div>
+
+        <div class="cell col-emergent">
+            <span class="label label-emergent">Integration Dynamic</span>
+            
+            <div class="int-block">
+                <span class="int-header">MECHANISM</span>
+                <span class="int-content">Cortical Recoupling</span>
+            </div>
+            
+            <div class="int-block">
+                <span class="int-header">SHIFT (PRAGMATIC)</span>
+                <span class="int-content">From <strong>Aggression</strong> to <strong>Assertive Agency</strong>. mPFC regulates Striatum.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 4. HEART -->
+    <div class="chakra-module heart-glow">
+        <div class="module-header">
+            <div class="header-title">
+                <svg class="sigil-icon" viewBox="0 0 24 24" style="stroke: currentColor;">
+                    <polygon points="12 2 22 8 22 18 12 22 2 18 2 8" fill="none" />
+                    <polygon points="12 6 18 10 18 16 12 18 6 16 6 10" fill="none" opacity="0.6"/>
+                </svg>
+                <span>04 :: HEART (Anahata)</span>
+            </div>
+            <div class="header-telemetry">
+                <span class="header-keywords">LOVE • CONNECTION • COMPASSION</span>
+                <span class="header-specs">SYS::PNEUMATIC // ELEM::AIR // 639Hz</span>
+            </div>
+        </div>
+        
+        <div class="cell col-energy">
+            <div>
+                <span class="label">Primary Tone</span>
+                Ventral Vagal (Social)
+            </div>
+            <div>
+                <span class="label">Core Fear</span>
+                Isolation / Heartbreak
+            </div>
+        </div>
+
+        <div class="cell col-physio">
+            <div class="sub-section">
+                <span class="label">Polyvagal State</span>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-ventral" d="M0 10 Q 10 0 20 10 T 40 10" /></svg>
+                    <span class="tone-marker">VENTRAL</span> <span>Open-heartedness; compassion; secure attachment.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-sympathetic" d="M0 10 L 5 0 L 10 20 L 15 5 L 20 15 L 25 0 L 30 20 L 35 10 L 40 10" /></svg>
+                    <span class="tone-marker">SYMPATHETIC</span> <span>Anxious attachment; Jealousy; Appeasement (Fawn).</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-dorsal" d="M0 10 L 10 10 L 12 14 L 14 6 L 16 10 L 40 10" /></svg>
+                    <span class="tone-marker">DORSAL</span> <span>Heart-closed withdrawal; isolation; numbness.</span>
+                </div>
+            </div>
+            
+            <div class="sub-section">
+                <span class="label">Neuro-Substrate</span>
+                <div class="neuro-grid">
+                    <div class="n-label">AXIS</div>
+                    <div class="n-val">Ventral Vagal Complex</div>
+                    
+                    <div class="n-label">CHEM</div>
+                    <div class="n-val"><span class="chem-tag">Oxytocin</span> (Stress Buffer)</div>
+                    
+                    <div class="n-label">MECH</div>
+                    <div class="n-val">Nucleus Ambiguus; RSA (Vagal Tone); Heart-Brain coherence</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell col-psych">
+            <div class="exile-box">
+                <span class="label">Exile (Wounded Part)</span>
+                <strong>"Heartbroken Child"</strong><br>
+                Holds grief, heartbreak, betrayal, loneliness.
+            </div>
+            <div class="proactive-box">
+                <span class="label">Proactive (Manager)</span>
+                <strong>"The Caretaker"</strong><br>
+                Manages via over-giving or avoiding intimacy.
+            </div>
+            <div class="reactive-box">
+                <span class="label">Reactive (Firefighter)</span>
+                <strong>"Jealous Part"</strong><br>
+                Reacts with intense jealousy or shutting people out.
+            </div>
+        </div>
+
+        <div class="cell col-emergent">
+            <span class="label label-emergent">Integration Dynamic</span>
+            
+            <div class="int-block">
+                <span class="int-header">MECHANISM</span>
+                <span class="int-content">Vagal Brake Engagement</span>
+            </div>
+            
+            <div class="int-block">
+                <span class="int-header">SHIFT (PRAGMATIC)</span>
+                <span class="int-content">From <strong>Defensive</strong> to <strong>Safe Vulnerability</strong>. Biology supports connection.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. THROAT -->
+    <div class="chakra-module throat-glow">
+        <div class="module-header">
+            <div class="header-title">
+                <svg class="sigil-icon" viewBox="0 0 24 24" style="stroke: currentColor;">
+                    <circle cx="12" cy="12" r="9" />
+                    <path d="M12 12m-6 0a6 6 0 1 0 12 0a6 6 0 1 0 -12 0" opacity="0.6"/>
+                    <line x1="3" y1="12" x2="21" y2="12" />
+                </svg>
+                <span>05 :: THROAT (Vishuddha)</span>
+            </div>
+            <div class="header-telemetry">
+                <span class="header-keywords">EXPRESSION • TRUTH • AUTHENTICITY</span>
+                <span class="header-specs">SYS::SONIC // ELEM::ETHER // 741Hz</span>
+            </div>
+        </div>
+        
+        <div class="cell col-energy">
+            <div>
+                <span class="label">Primary Tone</span>
+                Ventral Vagal (Expression)
+            </div>
+            <div>
+                <span class="label">Core Fear</span>
+                Silencing / Erasure
+            </div>
+        </div>
+
+        <div class="cell col-physio">
+            <div class="sub-section">
+                <span class="label">Polyvagal State</span>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-ventral" d="M0 10 Q 10 0 20 10 T 40 10" /></svg>
+                    <span class="tone-marker">VENTRAL</span> <span>Resonant prosody; authentic truth; active listening.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-sympathetic" d="M0 10 L 5 0 L 10 20 L 15 5 L 20 15 L 25 0 L 30 20 L 35 10 L 40 10" /></svg>
+                    <span class="tone-marker">SYMPATHETIC</span> <span>Yelling; sarcasm; rapid speech; appease/high-pitch.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-dorsal" d="M0 10 L 10 10 L 12 14 L 14 6 L 16 10 L 40 10" /></svg>
+                    <span class="tone-marker">DORSAL</span> <span>Choked-off voice; selective mutism; silence.</span>
+                </div>
+            </div>
+            
+            <div class="sub-section">
+                <span class="label">Neuro-Substrate</span>
+                <div class="neuro-grid">
+                    <div class="n-label">AXIS</div>
+                    <div class="n-val">Frontotemporal Network</div>
+                    
+                    <div class="n-label">MECH</div>
+                    <div class="n-val">Broca's Area; Vagal innervation of larynx (speech) & middle ear</div>
+                    
+                    <div class="n-label">ACTION</div>
+                    <div class="n-val">Prosody / Active Listening</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell col-psych">
+            <div class="exile-box">
+                <span class="label">Exile (Wounded Part)</span>
+                <strong>"Silenced Child"</strong><br>
+                Holds pain of being silenced, ignored, or shamed.
+            </div>
+            <div class="proactive-box">
+                <span class="label">Proactive (Manager)</span>
+                <strong>"The Diplomat"</strong><br>
+                Manages via overly diplomatic or rehearsed speech.
+            </div>
+            <div class="reactive-box">
+                <span class="label">Reactive (Firefighter)</span>
+                <strong>"Sarcastic Part"</strong><br>
+                Reacts with sarcasm, yelling, or silence.
+            </div>
+        </div>
+
+        <div class="cell col-emergent">
+            <span class="label label-emergent">Integration Dynamic</span>
+            
+            <div class="int-block">
+                <span class="int-header">MECHANISM</span>
+                <span class="int-content">Inhibition Release</span>
+            </div>
+            
+            <div class="int-block">
+                <span class="int-header">SHIFT (PRAGMATIC)</span>
+                <span class="int-content">From <strong>Silenced</strong> to <strong>Authentic Resonance</strong>. Fronto-limbic inhibition lifts.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 6. THIRD EYE -->
+    <div class="chakra-module thirdeye-glow">
+        <div class="module-header">
+            <div class="header-title">
+                <svg class="sigil-icon" viewBox="0 0 24 24" style="stroke: currentColor;">
+                    <path d="M1 12 L12 2 L23 12 L12 22 Z" fill="none"/>
+                    <circle cx="12" cy="12" r="3" />
+                    <line x1="12" y1="2" x2="12" y2="9" />
+                </svg>
+                <span>06 :: THIRD EYE (Ajna)</span>
+            </div>
+            <div class="header-telemetry">
+                <span class="header-keywords">INTUITION • INSIGHT • PERCEPTION</span>
+                <span class="header-specs">SYS::OPTICAL // ELEM::LIGHT // 852Hz</span>
+            </div>
+        </div>
+        
+        <div class="cell col-energy">
+            <div>
+                <span class="label">Primary Tone</span>
+                Metacognitive Observer
+            </div>
+            <div>
+                <span class="label">Core Fear</span>
+                Confusion / Illusion
+            </div>
+        </div>
+
+        <div class="cell col-physio">
+            <div class="sub-section">
+                <span class="label">Polyvagal State</span>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-ventral" d="M0 10 Q 10 0 20 10 T 40 10" /></svg>
+                    <span class="tone-marker">VENTRAL</span> <span>METACONSCIOUS: Open awareness; intuition; clarity.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-sympathetic" d="M0 10 L 5 0 L 10 20 L 15 5 L 20 15 L 25 0 L 30 20 L 35 10 L 40 10" /></svg>
+                    <span class="tone-marker">SYMPATHETIC</span> <span>Hyper-focus on threat; paranoia; obsessive logic.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-dorsal" d="M0 10 L 10 10 L 12 14 L 14 6 L 16 10 L 40 10" /></svg>
+                    <span class="tone-marker">DORSAL</span> <span>Brain fog; dissociation; tunnel vision of despair.</span>
+                </div>
+            </div>
+            
+            <div class="sub-section">
+                <span class="label">Neuro-Substrate</span>
+                <div class="neuro-grid">
+                    <div class="n-label">AXIS</div>
+                    <div class="n-val">Salience / DMN Coupling</div>
+                    
+                    <div class="n-label">CHEM</div>
+                    <div class="n-val"><span class="chem-tag">Glutamate</span> / <span class="chem-tag">GABA</span> Balance</div>
+                    
+                    <div class="n-label">MECH</div>
+                    <div class="n-val">Dorsal ACC monitors conflict; Prefrontal Regulation</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell col-psych">
+            <div class="exile-box">
+                <span class="label">Exile (Wounded Part)</span>
+                <strong>"Gaslit Child"</strong><br>
+                Holds confusion, self-doubt, mistrust of reality.
+            </div>
+            <div class="proactive-box">
+                <span class="label">Proactive (Manager)</span>
+                <strong>"The Intellectual"</strong><br>
+                Manages via rigid rationalism or seeking gurus.
+            </div>
+            <div class="reactive-box">
+                <span class="label">Reactive (Firefighter)</span>
+                <strong>"The Fantasist"</strong><br>
+                Reacts with paranoia, conspiracy, or dissociation.
+            </div>
+        </div>
+
+        <div class="cell col-emergent">
+            <span class="label label-emergent">Integration Dynamic</span>
+            
+            <div class="int-block">
+                <span class="int-header">MECHANISM</span>
+                <span class="int-content">Network Desynchronization</span>
+            </div>
+            
+            <div class="int-block">
+                <span class="int-header">SHIFT (PRAGMATIC)</span>
+                <span class="int-content">From <strong>Confusion</strong> to <strong>Insight</strong>. DMN quiets to allow direct perception.</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- 7. CROWN -->
+    <div class="chakra-module crown-glow">
+        <div class="module-header">
+            <div class="header-title">
+                <svg class="sigil-icon" viewBox="0 0 24 24" style="stroke: currentColor;">
+                    <path d="M12 12 L12 2 M12 12 L22 12 M12 12 L12 22 M12 12 L2 12" opacity="0.5"/>
+                    <path d="M12 12 L19 5 M12 12 L19 19 M12 12 L5 19 M12 12 L5 5" opacity="0.5"/>
+                    <circle cx="12" cy="12" r="2" />
+                    <circle cx="12" cy="12" r="8" stroke-dasharray="2,2"/>
+                </svg>
+                <span>07 :: CROWN (Sahasrara)</span>
+            </div>
+            <div class="header-telemetry">
+                <span class="header-keywords">MEANING • UNITY • SPIRITUALITY</span>
+                <span class="header-specs">SYS::QUANTUM // ELEM::COSMIC // 963Hz</span>
+            </div>
+        </div>
+        
+        <div class="cell col-energy">
+            <div>
+                <span class="label">Primary Tone</span>
+                Integrated Regulation
+            </div>
+            <div>
+                <span class="label">Core Fear</span>
+                Meaninglessness
+            </div>
+        </div>
+
+        <div class="cell col-physio">
+            <div class="sub-section">
+                <span class="label">Polyvagal State</span>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-ventral" d="M0 10 Q 10 0 20 10 T 40 10" /></svg>
+                    <span class="tone-marker">VENTRAL</span> <span>INTEGRATED: Connection to larger whole; awe; unity.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-sympathetic" d="M0 10 L 5 0 L 10 20 L 15 5 L 20 15 L 25 0 L 30 20 L 35 10 L 40 10" /></svg>
+                    <span class="tone-marker">SYMPATHETIC</span> <span>Spiritual grandiosity; frantic seeking; bypassing.</span>
+                </div>
+                <div class="tone-row">
+                    <svg class="waveform" viewBox="0 0 40 20"><path class="wave-path wave-dorsal" d="M0 10 L 10 10 L 12 14 L 14 6 L 16 10 L 40 10" /></svg>
+                    <span class="tone-marker">DORSAL</span> <span>Existential dread; nihilism; spiritual abandonment.</span>
+                </div>
+            </div>
+            
+            <div class="sub-section">
+                <span class="label">Neuro-Substrate</span>
+                <div class="neuro-grid">
+                    <div class="n-label">AXIS</div>
+                    <div class="n-val">Thalamo-Cortical Networks</div>
+                    
+                    <div class="n-label">ACTION</div>
+                    <div class="n-val">Global Gamma Synchrony</div>
+                    
+                    <div class="n-label">MECH</div>
+                    <div class="n-val">"Top-down" prediction minimization; Network Unification</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="cell col-psych">
+            <div class="exile-box">
+                <span class="label">Exile (Wounded Part)</span>
+                <strong>"Cosmic Orphan"</strong><br>
+                Holds existential dread, spiritual abandonment.
+            </div>
+            <div class="proactive-box">
+                <span class="label">Proactive (Manager)</span>
+                <strong>"True Believer"</strong><br>
+                Manages anxiety via rigid dogma or spiritual perfectionism.
+            </div>
+            <div class="reactive-box">
+                <span class="label">Reactive (Firefighter)</span>
+                <strong>"Spiritual Bypasser"</strong><br>
+                Reacts with nihilism or forcing mystical states.
+            </div>
+        </div>
+
+        <div class="cell col-emergent">
+            <span class="label label-emergent">Integration Dynamic</span>
+            
+            <div class="int-block">
+                <span class="int-header">MECHANISM</span>
+                <span class="int-content">Global Gamma Synchrony</span>
+            </div>
+            
+            <div class="int-block">
+                <span class="int-header">SHIFT (PRAGMATIC)</span>
+                <span class="int-content">From <strong>Fragmentation</strong> to <strong>Coherent Unity</strong>. Neural binding across networks.</span>
+            </div>
+        </div>
+    </div>
+
+    <footer style="text-align: center; margin-top: 40px; color: var(--text-dim); font-size: 0.8em; border-top: 1px dotted var(--border-color); padding-top: 20px;">
+        SELF-ENERGY (IFS "Self") = Precision-weighted prediction error minimization. 
+        In yogic language: the sushumna channel opening.
+    </footer>
+</div>
+
+</body>
+</html>
